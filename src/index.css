@@ -202,3 +202,14 @@ body {
   border-radius: 0.75rem;
 }
 
+/* Mobile Header & Countdown pill safeguard */
+@media (max-width: 767px) {
+  #room-countdown-pill {
+    display: none !important;
+  }
+}
+
+#room-countdown-pill {
+  white-space: nowrap;
+}
+

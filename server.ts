@@ -1134,6 +1134,45 @@ io.on('connection', (socket: Socket) => {
     });
   });
 
+  // 14. WebRTC Signaling: Ring / Re-invite specific participant from inside active call
+  socket.on('call:ring-participant', (payload: { targetSessionId: string }, callback) => {
+    if (!currentRoomId || !currentSessionId) return;
+    const room = rooms.get(currentRoomId);
+    if (!room || room.terminated || !room.activeCall || !room.activeCall.active) {
+      return callback?.({ success: false, error: 'No active call in this space.' });
+    }
+
+    const sender = room.participants.get(currentSessionId);
+    if (!sender) {
+      return callback?.({ success: false, error: 'Unauthorized.' });
+    }
+
+    const target = room.participants.get(payload.targetSessionId);
+    if (!target) {
+      return callback?.({ success: false, error: 'Participant not found in this space.' });
+    }
+
+    if (room.activeCall.participants.has(payload.targetSessionId)) {
+      return callback?.({ success: false, error: `${target.name} is already in the call.` });
+    }
+
+    if (room.activeCall.participants.size >= 5) {
+      return callback?.({ success: false, error: 'Call is full (maximum 5 participants).' });
+    }
+
+    // Direct ring event to the target participant
+    if (target.socketId) {
+      io.to(target.socketId).emit('call:incoming', {
+        callerSessionId: currentSessionId,
+        callerName: sender.name,
+        isAudioOnly: room.activeCall.isAudioOnly,
+        isDirectInvite: true,
+      });
+    }
+
+    callback?.({ success: true, targetName: target.name });
+  });
+
   // 14. WebRTC Signaling: SDP Offer
   socket.on('call:offer', (payload: { targetSessionId: string; sdp: any }) => {
     if (!currentRoomId || !currentSessionId) return;
@@ -1406,3 +1445,4 @@ async function startServer() {
 }
 
 startServer();
+
