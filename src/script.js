@@ -89,13 +89,6 @@ const el = {
   // Toast
   toastContainer: document.getElementById('toast-container'),
 
-  // Mobile Header & Dropdown Elements
-  menuCountdownText: document.getElementById('menu-countdown-text'),
-  menuCountdownRow: document.getElementById('menu-countdown-row'),
-  menuAudioCallBtn: document.getElementById('menu-audio-call-btn'),
-  menuCopyLinkBtn: document.getElementById('menu-copy-link-btn'),
-  headerActiveCallJoinBtn: document.getElementById('header-active-call-join-btn'),
-
   // Video & Audio Calling Elements
   headerVideoCallBtn: document.getElementById('header-video-call-btn'),
   headerAudioCallBtn: document.getElementById('header-audio-call-btn'),
@@ -118,12 +111,6 @@ const el = {
   callBtnToggleSize: document.getElementById('call-btn-toggle-size'),
   callBtnLeave: document.getElementById('call-btn-leave'),
   callBtnEndAll: document.getElementById('call-btn-end-all'),
-  callBtnAddParticipants: document.getElementById('call-btn-add-participants'),
-  callBtnAddParticipantsBottom: document.getElementById('call-btn-add-participants-bottom'),
-  modalCallAddParticipants: document.getElementById('modal-call-add-participants'),
-  callAddParticipantsList: document.getElementById('call-add-participants-list'),
-  closeCallAddModalBtn: document.getElementById('close-call-add-modal-btn'),
-  doneCallAddModalBtn: document.getElementById('done-call-add-modal-btn'),
   iconMicOn: document.getElementById('icon-mic-on'),
   iconMicOff: document.getElementById('icon-mic-off'),
   iconCameraOn: document.getElementById('icon-camera-on'),
@@ -370,22 +357,6 @@ function setupEventListeners() {
   // Video & Audio Calling Listeners
   el.headerVideoCallBtn?.addEventListener('click', () => startCall(false));
   el.headerAudioCallBtn?.addEventListener('click', () => startCall(true));
-  el.menuAudioCallBtn?.addEventListener('click', () => {
-    el.roomDropdownMenu.classList.add('hidden');
-    startCall(true);
-  });
-  el.menuCopyLinkBtn?.addEventListener('click', () => {
-    el.roomDropdownMenu.classList.add('hidden');
-    copyInviteLink();
-  });
-
-  el.headerActiveCallJoinBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (callState.roomCallActive && !callState.inCall) {
-      acceptCall(callState.isAudioOnly);
-    }
-  });
-
   el.headerActiveCallPill?.addEventListener('click', () => {
     if (callState.roomCallActive && !callState.inCall) {
       acceptCall(callState.isAudioOnly);
@@ -402,12 +373,6 @@ function setupEventListeners() {
   el.callBtnToggleSize?.addEventListener('click', toggleCallMinimized);
   el.callBtnLeave?.addEventListener('click', () => leaveCall(true));
   el.callBtnEndAll?.addEventListener('click', endCallForAll);
-
-  // In-Call Add Participant Modal Listeners
-  el.callBtnAddParticipants?.addEventListener('click', openAddParticipantsToCallModal);
-  el.callBtnAddParticipantsBottom?.addEventListener('click', openAddParticipantsToCallModal);
-  el.closeCallAddModalBtn?.addEventListener('click', () => closeModal(el.modalCallAddParticipants));
-  el.doneCallAddModalBtn?.addEventListener('click', () => closeModal(el.modalCallAddParticipants));
 
   // Close menus on outside click
   document.addEventListener('click', (e) => {
@@ -720,13 +685,9 @@ function initSocketAndJoin(roomId, initialSessionId, userName, token) {
     if (el.incomingCallerName) el.incomingCallerName.textContent = data.callerName || 'Someone';
     if (el.incomingCallerAvatar) el.incomingCallerAvatar.textContent = (data.callerName || '?')[0].toUpperCase();
     if (el.incomingCallType) {
-      if (data.isDirectInvite) {
-        el.incomingCallType.textContent = `is inviting you to join the ongoing ${data.isAudioOnly ? 'audio' : 'group'} call`;
-      } else {
-        el.incomingCallType.textContent = data.isAudioOnly
-          ? 'is inviting you to an audio call'
-          : 'is inviting you to a video call';
-      }
+      el.incomingCallType.textContent = data.isAudioOnly
+        ? 'is inviting you to an audio call'
+        : 'is inviting you to a video call';
     }
     openModal(el.modalIncomingCall);
   });
@@ -739,9 +700,6 @@ function initSocketAndJoin(roomId, initialSessionId, userName, token) {
     if (callState.inCall) {
       showToast(`${data.name} joined the call.`);
       updateCallParticipantSummary(data.totalParticipants);
-      if (el.modalCallAddParticipants && !el.modalCallAddParticipants.classList.contains('hidden')) {
-        renderCallAddParticipantsList();
-      }
     }
   });
 
@@ -750,9 +708,6 @@ function initSocketAndJoin(roomId, initialSessionId, userName, token) {
       showToast(`${data.name} left the call.`);
       removeRemoteTile(data.sessionId);
       updateCallParticipantSummary(data.totalParticipants);
-      if (el.modalCallAddParticipants && !el.modalCallAddParticipants.classList.contains('hidden')) {
-        renderCallAddParticipantsList();
-      }
     }
   });
 
@@ -878,23 +833,11 @@ function startCountdownTimer(expiresAt) {
     let formatted = `${pad(mins)}:${pad(secs)}`;
     if (hours > 0) formatted = `${hours}h ${formatted}`;
 
-    if (el.countdownText) {
-      el.countdownText.textContent = `Expires in ${formatted}`;
-    }
-    if (el.menuCountdownText) {
-      el.menuCountdownText.textContent = `Expires in ${formatted}`;
-    }
+    el.countdownText.textContent = `Expires in ${formatted}`;
+    el.roomCountdownPill.classList.remove('hidden');
 
-    // Keep pill hidden on mobile screens to prevent squishing the chat header
-    if (el.roomCountdownPill) {
-      el.roomCountdownPill.classList.remove('hidden');
-      el.roomCountdownPill.classList.add('hidden', 'md:flex');
-      if (diff < 5 * 60 * 1000) {
-        el.roomCountdownPill.classList.add('bg-amber-100', 'text-amber-900');
-      }
-    }
-    if (el.menuCountdownText && diff < 5 * 60 * 1000) {
-      el.menuCountdownText.classList.add('text-amber-700');
+    if (diff < 5 * 60 * 1000) {
+      el.roomCountdownPill.classList.add('bg-amber-100', 'text-amber-900');
     }
   }
 
@@ -907,11 +850,6 @@ function renderParticipants() {
   const count = state.participants.length;
   el.participantCountLabel.textContent = `${count}/5`;
   document.getElementById('panel-participant-summary').textContent = `${count} of 5 maximum`;
-
-  // If in-call add participants modal is open, refresh it as well
-  if (el.modalCallAddParticipants && !el.modalCallAddParticipants.classList.contains('hidden')) {
-    renderCallAddParticipantsList();
-  }
 
   // Render top avatar stack
   el.headerAvatarStack.innerHTML = '';
@@ -2230,109 +2168,6 @@ function endCallForAll() {
       leaveCall(false);
     } else {
       showToast(res?.error || 'Could not end call.', 'error');
-    }
-  });
-}
-
-// ==========================================
-// In-Call Add Participant Feature
-// ==========================================
-function openAddParticipantsToCallModal() {
-  renderCallAddParticipantsList();
-  openModal(el.modalCallAddParticipants);
-}
-
-function renderCallAddParticipantsList() {
-  if (!el.callAddParticipantsList) return;
-  el.callAddParticipantsList.innerHTML = '';
-
-  const participants = state.participants || [];
-  if (participants.length === 0) {
-    el.callAddParticipantsList.innerHTML = `
-      <div class="text-center py-6 text-xs text-warm-muted">
-        No other participants in this space right now.
-      </div>
-    `;
-    return;
-  }
-
-  // Count how many are currently connected to call (self + remote peers)
-  const activeCount = 1 + callState.peers.size;
-  const isCallFull = activeCount >= 5;
-
-  participants.forEach((p) => {
-    const isSelf = p.sessionId === state.sessionId;
-    const isAlreadyInCall = isSelf || callState.peers.has(p.sessionId);
-
-    const item = document.createElement('div');
-    item.className = 'p-2.5 rounded-xl bg-warm-canvas border border-warm flex items-center justify-between gap-3 text-xs';
-
-    item.innerHTML = `
-      <div class="flex items-center gap-2.5 min-w-0">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0" style="background-color: ${p.avatarColor || '#4a6b53'}">
-          ${escapeHtml((p.name || '?')[0].toUpperCase())}
-        </div>
-        <div class="min-w-0">
-          <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="font-medium text-warm-main truncate">${escapeHtml(p.name)}</span>
-            ${isSelf ? '<span class="text-[10px] text-warm-muted">(you)</span>' : ''}
-            ${p.isOwner ? '<span class="text-[9px] font-semibold px-1 py-0.2 bg-sage-light text-sage rounded uppercase">Owner</span>' : ''}
-          </div>
-          <p class="text-[10px] ${isAlreadyInCall ? 'text-emerald-700 font-medium' : 'text-warm-muted'}">
-            ${isAlreadyInCall ? 'In call' : (p.online ? 'In chat (not in call)' : 'Away')}
-          </p>
-        </div>
-      </div>
-      <div class="shrink-0 flex items-center">
-        ${
-          isAlreadyInCall
-            ? '<span class="text-[10px] px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">Connected</span>'
-            : `<button class="ring-add-btn px-2.5 py-1.5 rounded-xl bg-sage hover:bg-[#374e3a] text-white text-xs font-medium cursor-pointer transition-colors shadow-xs flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" ${isCallFull ? 'disabled' : ''}>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/></svg>
-                <span>${isCallFull ? 'Full' : 'Ring'}</span>
-              </button>`
-        }
-      </div>
-    `;
-
-    const ringBtn = item.querySelector('.ring-add-btn');
-    if (ringBtn && !isCallFull) {
-      ringBtn.addEventListener('click', () => {
-        ringParticipantToCall(p.sessionId, p.name, ringBtn);
-      });
-    }
-
-    el.callAddParticipantsList.appendChild(item);
-  });
-}
-
-function ringParticipantToCall(targetSessionId, targetName, buttonEl) {
-  if (!state.socket || !callState.inCall) return;
-
-  if (buttonEl) {
-    buttonEl.disabled = true;
-    buttonEl.innerHTML = `
-      <svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
-      <span>Calling...</span>
-    `;
-  }
-
-  showToast(`Ringing ${targetName}...`, 'info');
-
-  state.socket.emit('call:ring-participant', { targetSessionId }, (res) => {
-    if (res && res.success) {
-      showToast(`Invited ${targetName} to join the call.`);
-      setTimeout(() => {
-        if (buttonEl) {
-          buttonEl.innerHTML = `<span>Ringing...</span>`;
-        }
-      }, 500);
-    } else {
-      showToast(res?.error || `Could not call ${targetName}.`, 'error');
-      if (buttonEl) {
-        buttonEl.disabled = false;
-        buttonEl.innerHTML = `<span>Ring</span>`;
-      }
     }
   });
 }
