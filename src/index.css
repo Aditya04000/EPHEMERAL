@@ -1,0 +1,204 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #fbf9f5;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #f4efe6;
+  --bg-surface-hover: #ede6da;
+  --border-subtle: rgba(60, 50, 40, 0.1);
+  --border-medium: rgba(60, 50, 40, 0.18);
+  --text-main: #24221f;
+  --text-muted: #746d63;
+  --text-dim: #a39c90;
+  --accent-sage: #456149;
+  --accent-sage-hover: #374e3a;
+  --accent-sage-light: #eef3ed;
+  --accent-clay: #995240;
+  --bubble-received: #ffffff;
+  --bubble-sent: #eaf1ea;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Utilities for Ephemeral Aesthetic */
+.bg-warm-canvas {
+  background-color: var(--bg-primary);
+}
+.bg-warm-surface {
+  background-color: var(--bg-surface);
+}
+.bg-warm-subtle {
+  background-color: var(--bg-surface-subtle);
+}
+.border-warm {
+  border-color: var(--border-subtle);
+}
+.border-warm-medium {
+  border-color: var(--border-medium);
+}
+.text-warm-main {
+  color: var(--text-main);
+}
+.text-warm-muted {
+  color: var(--text-muted);
+}
+.text-warm-dim {
+  color: var(--text-dim);
+}
+.text-sage {
+  color: var(--accent-sage);
+}
+.bg-sage {
+  background-color: var(--accent-sage);
+}
+.bg-sage-light {
+  background-color: var(--accent-sage-light);
+}
+
+/* Message Bubble Styles */
+.msg-bubble-received {
+  background-color: var(--bubble-received);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+}
+.msg-bubble-sent {
+  background-color: var(--bubble-sent);
+  border: 1px solid rgba(69, 97, 73, 0.15);
+  border-radius: 16px;
+  border-bottom-right-radius: 4px;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  background: rgba(28, 25, 23, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.96); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pop-in {
+  animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hide scrollbar for tabs */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* WebRTC Video Call Styles */
+.video-tile {
+  background: #1e1b18;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  aspect-ratio: 16 / 9;
+  min-height: 140px;
+  max-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+}
+
+.video-tile video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: #1a1816;
+}
+
+.video-tile.video-mirror video {
+  transform: scaleX(-1);
+}
+
+/* Minimized call floating card */
+#active-call-overlay.call-minimized {
+  inset: auto;
+  bottom: 5.5rem;
+  right: 1.25rem;
+  width: 22rem;
+  max-width: calc(100vw - 2.5rem);
+  height: auto;
+  border-radius: 1.25rem;
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+  z-index: 45;
+  padding: 0.75rem;
+}
+
+#active-call-overlay.call-minimized #call-video-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  max-height: 110px;
+  margin: 0.25rem 0;
+  gap: 0.375rem;
+}
+
+#active-call-overlay.call-minimized .video-tile {
+  min-height: 50px;
+  max-height: 100px;
+  aspect-ratio: 4 / 3;
+  border-radius: 0.5rem;
+}
+
+#active-call-overlay.call-minimized .call-controls-bar {
+  padding-top: 0.5rem;
+  padding-bottom: 0.25rem;
+  gap: 0.375rem;
+}
+
+#active-call-overlay.call-minimized .call-controls-bar button {
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+}
+

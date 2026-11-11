@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>EPHEMERAL – Conversations That Leave No Trace</title>
+    <meta name="description" content="Conversations that leave no trace. Minimal, private, real-time group messaging with in-memory ephemeral rooms and auto-destruction." />
+    <meta property="og:title" content="EPHEMERAL – Conversations That Leave No Trace" />
+    <meta property="og:description" content="Conversations that leave no trace. Minimal, private, real-time group messaging with in-memory ephemeral rooms and auto-destruction." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body class="bg-warm-canvas text-warm-main antialiased selection:bg-[#456149]/15">
+    <div id="app" class="relative w-full h-full flex flex-col min-h-screen">
+
+      <!-- ========================================== -->
+      <!-- VIEW 1: LANDING PAGE -->
+      <!-- ========================================== -->
+      <section id="landing-view" class="flex-1 flex flex-col justify-between p-6 md:p-12 max-w-5xl mx-auto w-full">
+        <!-- Top bar -->
+        <header class="flex items-center justify-between py-2 border-b border-warm pb-4">
+          <div class="flex items-baseline gap-3">
+            <span class="text-xl font-bold tracking-tight text-warm-main uppercase">Ephemeral</span>
+            <span class="text-xs text-warm-muted tracking-wide hidden sm:inline">Here for the moment</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button id="nav-join-btn" class="text-xs font-medium px-3.5 py-1.5 rounded-full border border-warm hover:bg-warm-subtle transition-colors text-warm-main cursor-pointer">
+              Join with code
+            </button>
+          </div>
+        </header>
+
+        <!-- Main Hero -->
+        <main class="my-auto py-12 md:py-16 text-center max-w-2xl mx-auto">
+          <p class="text-xs font-semibold uppercase tracking-widest text-sage mb-4">Quiet Group Messaging</p>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-warm-main leading-tight mb-6">
+            Some conversations are meant to stay in the moment.
+          </h1>
+          <p class="text-base sm:text-lg text-warm-muted leading-relaxed mb-10 max-w-xl mx-auto">
+            A little space for your people. No accounts. No history. Just conversations that disappear when they're over.
+          </p>
+
+          <!-- Action buttons -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 mb-16">
+            <button id="hero-create-btn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-sage text-white font-medium text-sm hover:bg-[#374e3a] transition-all shadow-sm cursor-pointer flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              <span>Create a private room</span>
+            </button>
+            <button id="hero-join-btn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-warm-surface border border-warm-medium text-warm-main font-medium text-sm hover:bg-warm-subtle transition-all cursor-pointer flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+              <span>Join a room</span>
+            </button>
+          </div>
+
+          <!-- Feature cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left pt-6 border-t border-warm">
+            <div class="p-4 rounded-xl bg-warm-surface/70 border border-warm">
+              <div class="w-8 h-8 rounded-lg bg-sage-light text-sage flex items-center justify-center mb-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+              </div>
+              <h3 class="text-sm font-semibold text-warm-main mb-1">Private by design</h3>
+              <p class="text-xs text-warm-muted leading-relaxed">Small, intimate spaces for 2–5 people. No search engines, no public directory.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-warm-surface/70 border border-warm">
+              <div class="w-8 h-8 rounded-lg bg-sage-light text-sage flex items-center justify-center mb-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"/></svg>
+              </div>
+              <h3 class="text-sm font-semibold text-warm-main mb-1">Share freely</h3>
+              <p class="text-xs text-warm-muted leading-relaxed">Send messages, photos, GIFs, files, and reactions in a relaxed atmosphere.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-warm-surface/70 border border-warm">
+              <div class="w-8 h-8 rounded-lg bg-sage-light text-sage flex items-center justify-center mb-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+              </div>
+              <h3 class="text-sm font-semibold text-warm-main mb-1">Leave nothing behind</h3>
+              <p class="text-xs text-warm-muted leading-relaxed">End the room and all messages, photos, and files are wiped from memory immediately.</p>
+            </div>
+          </div>
+        </main>
+
+        <!-- Privacy footer -->
+        <footer class="pt-6 border-t border-warm text-center">
+          <p class="text-xs text-warm-dim max-w-xl mx-auto leading-relaxed">
+            Conversations live only in server memory during the chat. When the conversation ends or expires, all messages and temporary files are cleared permanently. We never store personal logs or require accounts.
+          </p>
+        </footer>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 2: ACTIVE CHAT ROOM -->
+      <!-- ========================================== -->
+      <section id="chat-view" class="hidden flex-1 flex flex-col h-screen max-h-screen overflow-hidden">
+        
+        <!-- Top Chat Header -->
+        <header class="flex-none px-4 py-3 bg-warm-surface border-b border-warm flex items-center justify-between z-10">
+          <!-- Room Info -->
+          <div class="flex items-center gap-3 min-w-0">
+            <button id="header-back-home" class="p-1.5 rounded-lg hover:bg-warm-subtle text-warm-muted hover:text-warm-main transition-colors cursor-pointer" title="Leave Space">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+            </button>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <h2 id="top-room-name" class="text-sm font-semibold text-warm-main truncate">Quiet Space</h2>
+                <span id="owner-badge" class="hidden text-[10px] font-medium px-1.5 py-0.5 rounded bg-sage-light text-sage uppercase tracking-wider">Owner</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-warm-muted">
+                <span class="text-[11px] text-warm-dim">Code:</span>
+                <span id="top-room-id" class="font-mono text-[11px] font-semibold text-warm-main select-all uppercase">K7M4P9XA</span>
+                <button id="quick-copy-link-btn" class="hover:text-warm-main underline decoration-dotted cursor-pointer flex items-center gap-1" title="Copy full invitation link">
+                  <span>copy link</span>
+                </button>
+                <span class="text-warm-dim">·</span>
+                <button id="quick-copy-code-btn" class="hover:text-warm-main underline decoration-dotted cursor-pointer flex items-center gap-1" title="Copy 8-character invitation code">
+                  <span>copy code</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Center: Expiration Countdown & Active Call Banner -->
+          <div class="flex items-center gap-2">
+            <!-- Active Call Banner (visible when a call is ongoing in the room) -->
+            <button id="header-active-call-pill" class="hidden items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-medium hover:bg-emerald-100 transition-colors cursor-pointer animate-pulse">
+              <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+              <span id="header-active-call-label">Call in progress (1/5)</span>
+              <span class="underline decoration-dotted text-[11px]">Join</span>
+            </button>
+
+            <div id="room-countdown-pill" class="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-warm-subtle text-xs text-warm-muted">
+              <svg class="w-3.5 h-3.5 text-sage" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span id="countdown-text" class="tabular-nums">Expires in 59:00</span>
+            </div>
+          </div>
+
+          <!-- Right: Call triggers, People button & Menu -->
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <!-- Video Call Trigger Button -->
+            <button id="header-video-call-btn" class="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-warm hover:bg-warm-subtle transition-colors text-warm-main cursor-pointer flex items-center gap-1.5 text-xs font-medium" title="Start video call">
+              <svg class="w-4 h-4 text-sage" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+              <span class="hidden sm:inline">Call</span>
+            </button>
+
+            <!-- Audio-only Call Trigger Button -->
+            <button id="header-audio-call-btn" class="p-1.5 rounded-lg border border-warm hover:bg-warm-subtle transition-colors text-warm-muted hover:text-warm-main cursor-pointer" title="Start audio-only call">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/></svg>
+            </button>
+
+            <!-- Disappearing message indicator if active -->
+            <button id="header-disappear-btn" class="hidden px-2.5 py-1 rounded-lg text-xs font-medium border border-warm hover:bg-warm-subtle text-warm-muted cursor-pointer items-center gap-1.5" title="Disappearing messages timer">
+              <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span id="header-disappear-label">30s</span>
+            </button>
+
+            <!-- Participant count trigger -->
+            <button id="open-participants-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-warm hover:bg-warm-subtle transition-colors cursor-pointer text-xs font-medium text-warm-main">
+              <div class="flex -space-x-1.5 overflow-hidden" id="header-avatar-stack">
+                <!-- Injected via script -->
+              </div>
+              <span id="participant-count-label">1/5</span>
+            </button>
+
+            <!-- Room options menu button -->
+            <div class="relative">
+              <button id="room-options-menu-btn" class="p-1.5 rounded-lg border border-warm hover:bg-warm-subtle transition-colors text-warm-main cursor-pointer" title="Options">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/></svg>
+              </button>
+
+              <!-- Dropdown menu -->
+              <div id="room-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 bg-warm-surface border border-warm-medium rounded-xl shadow-lg p-1.5 z-50 text-xs animate-pop-in">
+                <button id="menu-invite-btn" class="w-full text-left px-3 py-2 rounded-lg hover:bg-warm-subtle text-warm-main flex items-center gap-2 cursor-pointer">
+                  <svg class="w-4 h-4 text-warm-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg>
+                  <span>Invite people</span>
+                </button>
+                <button id="menu-timer-btn" class="w-full text-left px-3 py-2 rounded-lg hover:bg-warm-subtle text-warm-main flex items-center gap-2 cursor-pointer">
+                  <svg class="w-4 h-4 text-warm-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <span>Disappearing messages</span>
+                </button>
+                <div class="h-px bg-warm my-1"></div>
+                <button id="menu-leave-btn" class="w-full text-left px-3 py-2 rounded-lg hover:bg-warm-subtle text-warm-main flex items-center gap-2 cursor-pointer">
+                  <svg class="w-4 h-4 text-warm-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+                  <span>Leave room</span>
+                </button>
+                <button id="menu-end-room-btn" class="hidden w-full text-left px-3 py-2 rounded-lg hover:bg-red-50 text-red-700 font-medium flex items-center gap-2 cursor-pointer">
+                  <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9"/></svg>
+                  <span>End conversation for all</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Main Chat Body -->
+        <div class="flex-1 flex overflow-hidden relative">
+
+          <!-- Chat Messages Area -->
+          <div class="flex-1 flex flex-col h-full bg-warm-canvas min-w-0">
+            <!-- Messages Scroll Feed -->
+            <div id="messages-container" class="flex-1 overflow-y-auto px-4 py-6 space-y-4 max-w-3xl mx-auto w-full">
+              <!-- Welcome Initial Message -->
+              <div id="room-empty-state" class="text-center py-12 px-4 max-w-md mx-auto">
+                <div class="w-12 h-12 rounded-full bg-sage-light text-sage mx-auto flex items-center justify-center mb-4">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+                </div>
+                <h3 class="text-base font-semibold text-warm-main mb-1">Your space is open</h3>
+                <p class="text-xs text-warm-muted mb-4 leading-relaxed">
+                  Invite up to 4 friends to join this conversation. Share your 8-character room code or private link.
+                </p>
+                <div class="flex items-center justify-center gap-2">
+                  <button id="welcome-invite-btn" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-warm-surface border border-warm hover:bg-warm-subtle text-xs font-medium text-warm-main transition-colors cursor-pointer shadow-sm">
+                    <svg class="w-3.5 h-3.5 text-sage" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
+                    <span>Copy invite link</span>
+                  </button>
+                  <button id="welcome-copy-code-btn" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-warm-surface border border-warm hover:bg-warm-subtle text-xs font-medium text-warm-main transition-colors cursor-pointer shadow-sm">
+                    <span>Copy code</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Message list injected here -->
+              <div id="messages-list" class="space-y-4"></div>
+            </div>
+
+            <!-- Scroll-to-bottom FAB (hidden by default) -->
+            <button id="scroll-bottom-btn" class="hidden absolute bottom-24 right-6 p-2 rounded-full bg-warm-surface border border-warm shadow-md text-warm-muted hover:text-warm-main hover:bg-warm-subtle transition-all cursor-pointer z-10" title="Scroll to latest">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"/></svg>
+            </button>
+
+            <!-- Typing indicator -->
+            <div id="typing-bar" class="hidden px-6 py-1 max-w-3xl mx-auto w-full text-[11px] text-warm-muted italic flex items-center gap-1.5">
+              <span class="inline-flex gap-0.5">
+                <span class="w-1 h-1 bg-warm-muted rounded-full animate-bounce"></span>
+                <span class="w-1 h-1 bg-warm-muted rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                <span class="w-1 h-1 bg-warm-muted rounded-full animate-bounce [animation-delay:0.4s]"></span>
+              </span>
+              <span id="typing-text">Someone is typing...</span>
+            </div>
+
+            <!-- Active Reply Snippet Banner -->
+            <div id="reply-banner" class="hidden px-4 py-2 bg-warm-subtle border-t border-warm flex items-center justify-between text-xs max-w-3xl mx-auto w-full">
+              <div class="flex items-center gap-2 min-w-0">
+                <svg class="w-3.5 h-3.5 text-sage shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 016 6v3"/></svg>
+                <span class="text-warm-muted">Replying to <b id="reply-target-name" class="font-medium text-warm-main">User</b>:</span>
+                <span id="reply-target-snippet" class="text-warm-muted truncate italic max-w-xs sm:max-w-md">Snippet text...</span>
+              </div>
+              <button id="cancel-reply-btn" class="p-1 hover:text-warm-main text-warm-muted cursor-pointer" title="Cancel reply">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+
+            <!-- Message Composer Bar -->
+            <footer class="p-3 sm:p-4 bg-warm-surface border-t border-warm max-w-3xl mx-auto w-full relative">
+              <div class="flex items-end gap-2 bg-warm-canvas border border-warm rounded-2xl p-1.5 focus-within:border-warm-medium transition-colors">
+                
+                <!-- Attachment Menu Trigger -->
+                <div class="relative">
+                  <button id="composer-attach-btn" class="p-2 rounded-xl text-warm-muted hover:text-warm-main hover:bg-warm-subtle transition-colors cursor-pointer" title="Add photo, GIF, file, or sticker">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                  </button>
+
+                  <!-- Attachment Popover -->
+                  <div id="attachment-menu" class="hidden absolute bottom-12 left-0 w-48 bg-warm-surface border border-warm-medium rounded-xl shadow-lg p-1.5 z-40 text-xs animate-pop-in">
+                    <button id="attach-photo-btn" class="w-full text-left px-3 py-2 rounded-lg hover:bg-warm-subtle text-warm-main flex items-center gap-2.5 cursor-pointer">
+                      <svg class="w-4 h-4 text-sage" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+                      <span>Photo / Image</span>
+                    </button>
+                    <button id="attach-gif-btn" class="w-full text-left px-3 py-2 rounded-lg hover:bg-warm-subtle text-warm-main flex items-center gap-2.5 cursor-pointer">
+                      <svg class="w-4 h-4 text-warm-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12.75 3.03v.568c0 .334.148.65.405.864l1.068.89c.442.369.535 1.01.216 1.49l-.51.766a2.25 2.25 0 01-1.161.886l-.143.048a1.107 1.107 0 00-.57 1.664c.369.555.169 1.307-.427 1.605L9 13.25m0 0l-1.5 1.5m1.5-1.5v-3.75m0 3.75h3.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                      <span>GIFs</span>
+                    </button>
+                    <button id="attach-sticker-btn" class="w-full text-left px-3 py-2 rounded-lg hover:bg-warm-subtle text-warm-main flex items-center gap-2.5 cursor-pointer">
+                      <svg class="w-4 h-4 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"/></svg>
+                      <span>Stickers</span>
+                    </button>
+                    <button id="attach-file-btn" class="w-full text-left px-3 py-2 rounded-lg hover:bg-warm-subtle text-warm-main flex items-center gap-2.5 cursor-pointer">
+                      <svg class="w-4 h-4 text-warm-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+                      <span>Document / File</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Hidden file inputs -->
+                <input type="file" id="image-file-input" class="hidden" accept="image/jpeg,image/png,image/webp,image/gif" />
+                <input type="file" id="doc-file-input" class="hidden" accept=".pdf,.doc,.docx,.txt,.zip,.csv" />
+
+                <!-- Emoji Button -->
+                <div class="relative">
+                  <button id="composer-emoji-btn" class="p-2 rounded-xl text-warm-muted hover:text-warm-main hover:bg-warm-subtle transition-colors cursor-pointer" title="Pick emoji">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  </button>
+
+                  <!-- Emoji Popover -->
+                  <div id="emoji-picker-popover" class="hidden absolute bottom-12 left-0 w-64 bg-warm-surface border border-warm-medium rounded-xl shadow-lg p-2 z-40 text-sm animate-pop-in">
+                    <div class="grid grid-cols-6 gap-1 text-center" id="emoji-grid">
+                      <!-- Injected via script -->
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Textarea input -->
+                <textarea
+                  id="message-input"
+                  rows="1"
+                  placeholder="Say something quietly..."
+                  class="flex-1 bg-transparent border-0 outline-none resize-none py-2 px-1 text-sm text-warm-main placeholder:text-warm-dim max-h-32 leading-relaxed"
+                ></textarea>
+
+                <!-- Send Button -->
+                <button id="message-send-btn" class="p-2 rounded-xl bg-sage text-white hover:bg-[#374e3a] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs shrink-0" title="Send message">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+                </button>
+              </div>
+            </footer>
+          </div>
+
+          <!-- Slide-out Participant Panel (Desktop sidebar / mobile drawer) -->
+          <div id="participant-panel" class="hidden fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-warm-surface border-l border-warm shadow-xl z-30 flex flex-col transition-transform">
+            <!-- Header -->
+            <div class="px-5 py-4 border-b border-warm flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-semibold text-warm-main">People in this space</h3>
+                <p id="panel-participant-summary" class="text-xs text-warm-muted">1 of 5 maximum</p>
+              </div>
+              <button id="close-panel-btn" class="p-1 rounded-lg hover:bg-warm-subtle text-warm-muted hover:text-warm-main cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+
+            <!-- Participant List -->
+            <div id="panel-participants-list" class="flex-1 overflow-y-auto p-4 space-y-3">
+              <!-- Injected by script -->
+            </div>
+
+            <!-- Invite Section (Visible if owner or canInvite) -->
+            <div id="panel-invite-section" class="p-4 border-t border-warm bg-warm-subtle/40 space-y-3">
+              <div>
+                <span class="text-xs font-semibold text-warm-main block mb-1">Room Code</span>
+                <div class="flex items-center gap-1.5">
+                  <input id="panel-room-code-input" type="text" readonly class="flex-1 bg-warm-surface border border-warm rounded-lg px-2.5 py-1.5 text-xs text-warm-main font-mono font-bold tracking-widest uppercase text-center" />
+                  <button id="panel-copy-code-btn" class="px-3 py-1.5 rounded-lg bg-warm-surface border border-warm text-warm-main text-xs font-medium hover:bg-warm-subtle transition-colors cursor-pointer shrink-0">
+                    Copy Code
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <span class="text-xs font-semibold text-warm-main block mb-1">Direct Invite Link</span>
+                <div class="flex items-center gap-1.5">
+                  <input id="panel-invite-link-input" type="text" readonly class="flex-1 bg-warm-surface border border-warm rounded-lg px-2.5 py-1.5 text-xs text-warm-main font-mono truncate" />
+                  <button id="panel-copy-invite-btn" class="px-3 py-1.5 rounded-lg bg-sage text-white text-xs font-medium hover:bg-[#374e3a] transition-colors cursor-pointer shrink-0">
+                    Copy Link
+                  </button>
+                </div>
+              </div>
+              <p class="text-[10px] text-warm-dim">Anyone with this code or link can join. Maximum 5 people.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 3: CONVERSATION ENDED -->
+      <!-- ========================================== -->
+      <section id="ended-view" class="hidden flex-1 flex flex-col justify-center items-center p-6 text-center max-w-lg mx-auto w-full my-auto">
+        <div class="w-16 h-16 rounded-2xl bg-warm-subtle text-sage mx-auto flex items-center justify-center mb-6">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+        </div>
+        <h2 class="text-2xl font-semibold text-warm-main mb-2">That was nice. This conversation has ended.</h2>
+        <p class="text-sm text-warm-muted leading-relaxed mb-8 max-w-md">
+          All temporary messages, reactions, photos, and files were completely cleared from server memory. Nothing was saved.
+        </p>
+        <button id="ended-return-home-btn" class="px-6 py-2.5 rounded-xl bg-sage text-white text-sm font-medium hover:bg-[#374e3a] transition-all shadow-sm cursor-pointer">
+          Start a new conversation
+        </button>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- MODALS -->
+      <!-- ========================================== -->
+
+      <!-- 1. Create Room Modal -->
+      <div id="modal-create" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop animate-fade-in">
+        <div class="bg-warm-surface border border-warm-medium rounded-2xl shadow-xl max-w-md w-full p-6 text-warm-main">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-warm-main">Create a private space</h3>
+            <button id="close-modal-create" class="p-1 rounded-lg hover:bg-warm-subtle text-warm-muted hover:text-warm-main cursor-pointer">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+
+          <form id="create-room-form" class="space-y-4">
+            <div>
+              <label for="create-name-input" class="block text-xs font-medium text-warm-muted mb-1">Your display name</label>
+              <input id="create-name-input" type="text" maxlength="30" required placeholder="e.g. Maya" class="w-full px-3.5 py-2.5 rounded-xl bg-warm-canvas border border-warm focus:border-warm-medium outline-none text-sm text-warm-main" />
+            </div>
+
+            <div>
+              <label for="create-room-name-input" class="block text-xs font-medium text-warm-muted mb-1">Room name (optional)</label>
+              <input id="create-room-name-input" type="text" maxlength="40" placeholder="e.g. Sunday Tea or Evening Walk" class="w-full px-3.5 py-2.5 rounded-xl bg-warm-canvas border border-warm focus:border-warm-medium outline-none text-sm text-warm-main" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-warm-muted mb-1">Room lifetime</label>
+              <select id="create-lifetime-select" class="w-full px-3.5 py-2.5 rounded-xl bg-warm-canvas border border-warm focus:border-warm-medium outline-none text-sm text-warm-main cursor-pointer">
+                <option value="30">30 minutes</option>
+                <option value="60" selected>1 hour (recommended)</option>
+                <option value="180">3 hours</option>
+                <option value="360">6 hours</option>
+                <option value="1440">24 hours</option>
+              </select>
+            </div>
+
+            <div class="pt-2 flex items-center justify-end gap-2.5">
+              <button type="button" id="cancel-create-btn" class="px-4 py-2 rounded-xl text-xs font-medium text-warm-muted hover:bg-warm-subtle transition-colors cursor-pointer">
+                Cancel
+              </button>
+              <button type="submit" id="submit-create-btn" class="px-5 py-2 rounded-xl bg-sage text-white text-xs font-medium hover:bg-[#374e3a] transition-all shadow-sm cursor-pointer flex items-center gap-1.5">
+                <span>Create space</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 2. Join Room Modal -->
+      <div id="modal-join" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop animate-fade-in">
+        <div class="bg-warm-surface border border-warm-medium rounded-2xl shadow-xl max-w-md w-full p-6 text-warm-main">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-warm-main">Join a conversation</h3>
+            <button id="close-modal-join" class="p-1 rounded-lg hover:bg-warm-subtle text-warm-muted hover:text-warm-main cursor-pointer">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+
+          <div id="join-invite-notice" class="hidden mb-4 p-3 rounded-xl bg-sage-light/60 border border-sage/20 text-xs text-warm-main leading-relaxed"></div>
+
+          <form id="join-room-form" class="space-y-4">
+            <div>
+              <label for="join-room-id-input" class="block text-xs font-medium text-warm-muted mb-1">8-character Room code or link</label>
+              <input id="join-room-id-input" type="text" required placeholder="e.g. K7M4P9XA" class="w-full px-3.5 py-2.5 rounded-xl bg-warm-canvas border border-warm focus:border-warm-medium outline-none text-sm text-warm-main font-mono uppercase" />
+            </div>
+
+            <div>
+              <label for="join-name-input" class="block text-xs font-medium text-warm-muted mb-1">Your display name</label>
+              <input id="join-name-input" type="text" maxlength="30" required placeholder="e.g. Leo" class="w-full px-3.5 py-2.5 rounded-xl bg-warm-canvas border border-warm focus:border-warm-medium outline-none text-sm text-warm-main" />
+            </div>
+
+            <!-- Optional token field if joining directly -->
+            <input id="join-token-input" type="hidden" />
+
+            <div id="join-error-msg" class="hidden text-xs text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200"></div>
+
+            <div class="pt-2 flex items-center justify-end gap-2.5">
+              <button type="button" id="cancel-join-btn" class="px-4 py-2 rounded-xl text-xs font-medium text-warm-muted hover:bg-warm-subtle transition-colors cursor-pointer">
+                Cancel
+              </button>
+              <button type="submit" id="submit-join-btn" class="px-5 py-2 rounded-xl bg-sage text-white text-xs font-medium hover:bg-[#374e3a] transition-all shadow-sm cursor-pointer flex items-center gap-1.5">
+                <span>Enter conversation</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 3. Confirm Delete Message Modal (Iframe-Safe & Reliable) -->
+      <div id="modal-confirm-delete" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop animate-fade-in">
+        <div class="bg-warm-surface border border-warm-medium rounded-2xl shadow-xl max-w-sm w-full p-6 text-warm-main">
+          <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </div>
+          <h3 class="text-base font-semibold text-warm-main mb-1">Delete this message?</h3>
+          <p class="text-xs text-warm-muted mb-5 leading-relaxed">
+            This message will be permanently deleted for everyone in this conversation.
+          </p>
+
+          <div class="flex items-center justify-end gap-2">
+            <button id="cancel-delete-msg-btn" class="px-4 py-2 rounded-xl text-xs font-medium text-warm-muted hover:bg-warm-subtle cursor-pointer">
+              Cancel
+            </button>
+            <button id="confirm-delete-msg-btn" class="px-4 py-2 rounded-xl bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition-colors cursor-pointer shadow-xs">
+              Delete message
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Confirm End Conversation Modal -->
+      <div id="modal-confirm-end" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop animate-fade-in">
+        <div class="bg-warm-surface border border-warm-medium rounded-2xl shadow-xl max-w-sm w-full p-6 text-warm-main">
+          <div class="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+          </div>
+          <h3 class="text-base font-semibold text-warm-main mb-1">End this conversation?</h3>
+          <p class="text-xs text-warm-muted mb-5 leading-relaxed">
+            Everyone will be disconnected immediately, and all temporary messages and shared media will be cleared from memory.
+          </p>
+
+          <div class="flex items-center justify-end gap-2">
+            <button id="cancel-end-btn" class="px-4 py-2 rounded-xl text-xs font-medium text-warm-muted hover:bg-warm-subtle cursor-pointer">
+              Keep talking
+            </button>
+            <button id="confirm-end-btn" class="px-4 py-2 rounded-xl bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition-colors cursor-pointer shadow-xs">
+              End and clear data
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Media / Sticker / GIF Modal -->
+      <div id="modal-media-picker" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop animate-fade-in">
+        <div class="bg-warm-surface border border-warm-medium rounded-2xl shadow-xl max-w-lg w-full p-5 text-warm-main max-h-[80vh] flex flex-col">
+          <div class="flex items-center justify-between pb-3 border-b border-warm">
+            <div class="flex items-center gap-3">
+              <button id="tab-stickers" class="text-xs font-semibold px-3 py-1 rounded-lg bg-warm-subtle text-warm-main cursor-pointer">Stickers</button>
+              <button id="tab-gifs" class="text-xs font-semibold px-3 py-1 rounded-lg hover:bg-warm-subtle text-warm-muted cursor-pointer">GIFs</button>
+            </div>
+            <button id="close-modal-media" class="p-1 rounded-lg hover:bg-warm-subtle text-warm-muted hover:text-warm-main cursor-pointer">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+
+          <!-- Sticker Content -->
+          <div id="media-stickers-view" class="flex-1 overflow-y-auto py-4">
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-3" id="stickers-container">
+              <!-- Injected by script -->
+            </div>
+          </div>
+
+          <!-- GIF Content -->
+          <div id="media-gifs-view" class="hidden flex-1 overflow-y-auto py-4 flex flex-col">
+            <div class="mb-3">
+              <input id="gif-search-input" type="text" placeholder="Search friendly GIFs..." class="w-full px-3 py-2 rounded-xl bg-warm-canvas border border-warm text-xs text-warm-main outline-none focus:border-warm-medium" />
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 overflow-y-auto flex-1" id="gifs-container">
+              <!-- Injected by script -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Disappearing Messages Setting Modal -->
+      <div id="modal-timer-setting" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop animate-fade-in">
+        <div class="bg-warm-surface border border-warm-medium rounded-2xl shadow-xl max-w-sm w-full p-6 text-warm-main">
+          <h3 class="text-base font-semibold text-warm-main mb-1">Disappearing messages</h3>
+          <p class="text-xs text-warm-muted mb-4 leading-relaxed">
+            When enabled, messages automatically vanish from everyone's view after the selected time.
+          </p>
+
+          <div class="space-y-2 mb-5">
+            <label class="flex items-center justify-between p-3 rounded-xl border border-warm hover:bg-warm-subtle cursor-pointer">
+              <span class="text-xs text-warm-main">Off (kept until room ends)</span>
+              <input type="radio" name="disappear-timer" value="0" class="accent-[#456149]" checked />
+            </label>
+            <label class="flex items-center justify-between p-3 rounded-xl border border-warm hover:bg-warm-subtle cursor-pointer">
+              <span class="text-xs text-warm-main">10 seconds</span>
+              <input type="radio" name="disappear-timer" value="10" class="accent-[#456149]" />
+            </label>
+            <label class="flex items-center justify-between p-3 rounded-xl border border-warm hover:bg-warm-subtle cursor-pointer">
+              <span class="text-xs text-warm-main">30 seconds</span>
+              <input type="radio" name="disappear-timer" value="30" class="accent-[#456149]" />
+            </label>
+            <label class="flex items-center justify-between p-3 rounded-xl border border-warm hover:bg-warm-subtle cursor-pointer">
+              <span class="text-xs text-warm-main">5 minutes</span>
+              <input type="radio" name="disappear-timer" value="300" class="accent-[#456149]" />
+            </label>
+          </div>
+
+          <div class="flex items-center justify-end gap-2">
+            <button id="cancel-timer-btn" class="px-4 py-2 rounded-xl text-xs font-medium text-warm-muted hover:bg-warm-subtle cursor-pointer">
+              Cancel
+            </button>
+            <button id="save-timer-btn" class="px-4 py-2 rounded-xl bg-sage text-white text-xs font-medium hover:bg-[#374e3a] cursor-pointer">
+              Save timer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Photo Lightbox Modal -->
+      <div id="modal-lightbox" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+        <button id="close-lightbox-btn" class="absolute top-4 right-4 p-2 text-white/70 hover:text-white cursor-pointer">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <img id="lightbox-img" src="" alt="Enlarged photo" class="max-w-full max-h-[90vh] rounded-lg object-contain shadow-2xl" />
+      </div>
+
+      <!-- 8. Edit Message Modal -->
+      <div id="modal-edit-msg" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop animate-fade-in">
+        <div class="bg-warm-surface border border-warm-medium rounded-2xl shadow-xl max-w-md w-full p-5 text-warm-main">
+          <h3 class="text-sm font-semibold text-warm-main mb-2">Edit your message</h3>
+          <textarea id="edit-msg-input" rows="3" class="w-full px-3 py-2 rounded-xl bg-warm-canvas border border-warm focus:border-warm-medium outline-none text-sm text-warm-main resize-none mb-4"></textarea>
+          <div class="flex items-center justify-end gap-2">
+            <button id="cancel-edit-btn" class="px-3.5 py-1.5 rounded-xl text-xs font-medium text-warm-muted hover:bg-warm-subtle cursor-pointer">Cancel</button>
+            <button id="save-edit-btn" class="px-4 py-1.5 rounded-xl bg-sage text-white text-xs font-medium hover:bg-[#374e3a] cursor-pointer">Save changes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. Incoming Call Modal -->
+      <div id="modal-incoming-call" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop animate-fade-in">
+        <div class="bg-warm-surface border border-warm-medium rounded-2xl shadow-xl max-w-sm w-full p-6 text-warm-main text-center">
+          <div class="relative w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full bg-sage/20 animate-ping opacity-75"></div>
+            <div id="incoming-caller-avatar" class="relative w-14 h-14 rounded-full bg-sage text-white text-xl font-bold flex items-center justify-center shadow-md">
+              ?
+            </div>
+          </div>
+
+          <h3 id="incoming-caller-name" class="text-lg font-semibold text-warm-main mb-1 truncate">Someone</h3>
+          <p id="incoming-call-type" class="text-xs text-warm-muted mb-6">is inviting you to a conversation call</p>
+
+          <div class="flex items-center justify-center gap-2 sm:gap-3">
+            <button type="button" id="decline-call-btn" class="flex-1 py-2.5 px-3 rounded-xl bg-warm-canvas border border-warm hover:bg-red-50 hover:text-red-600 text-xs font-medium text-warm-muted transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+              <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              <span>Decline</span>
+            </button>
+            <button type="button" id="accept-audio-call-btn" class="py-2.5 px-3 rounded-xl bg-warm-subtle hover:bg-warm-hover text-warm-main text-xs font-medium border border-warm transition-colors cursor-pointer flex items-center justify-center gap-1.5" title="Accept with microphone only">
+              <svg class="w-4 h-4 text-warm-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/></svg>
+              <span>Audio</span>
+            </button>
+            <button type="button" id="accept-call-btn" class="flex-1 py-2.5 px-3 rounded-xl bg-sage text-white text-xs font-medium hover:bg-[#374e3a] transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+              <span>Accept</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10. Active Video / Audio Call Overlay -->
+      <div id="active-call-overlay" class="hidden fixed inset-0 z-40 bg-warm-canvas/95 backdrop-blur-md flex flex-col p-3 sm:p-5 animate-fade-in transition-all">
+        <!-- Overlay Header -->
+        <div class="call-overlay-header flex items-center justify-between pb-3 border-b border-warm w-full max-w-5xl mx-auto shrink-0">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-xs sm:text-sm font-semibold text-warm-main truncate">Group Call</h3>
+                <span id="call-duration-text" class="text-[11px] font-mono text-warm-muted tabular-nums">00:00</span>
+              </div>
+              <p id="call-participant-summary" class="text-[10px] text-warm-muted">1 participant (up to 5)</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Minimize / Expand Toggle -->
+            <button id="call-btn-toggle-size" class="p-2 rounded-xl border border-warm hover:bg-warm-subtle text-warm-muted hover:text-warm-main transition-colors cursor-pointer" title="Minimize / Chat while talking">
+              <svg id="icon-minimize" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25"/></svg>
+              <svg id="icon-expand" class="hidden w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Video Grid Container -->
+        <div id="call-video-grid" class="flex-1 my-3 w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-y-auto content-center items-center justify-center">
+          <!-- Local and remote video tiles injected dynamically -->
+        </div>
+
+        <!-- Bottom Controls Bar -->
+        <div class="call-controls-bar py-3 border-t border-warm flex items-center justify-center gap-2 sm:gap-3 w-full max-w-md mx-auto shrink-0">
+          <!-- Mic Toggle -->
+          <button id="call-btn-toggle-mic" class="p-3 rounded-2xl bg-warm-surface border border-warm hover:bg-warm-subtle text-warm-main shadow-xs transition-colors cursor-pointer flex items-center justify-center" title="Mute / Unmute microphone">
+            <svg id="icon-mic-on" class="w-5 h-5 text-warm-main" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15a3 3 0 003-3V6a3 3 0 00-6 0v6a3 3 0 003 3z"/></svg>
+            <svg id="icon-mic-off" class="hidden w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M3 3l18 18M9 9v3a3 3 0 005.12 2.12M15 9.34V6a3 3 0 00-5.94-.6"/></svg>
+          </button>
+
+          <!-- Camera Toggle -->
+          <button id="call-btn-toggle-camera" class="p-3 rounded-2xl bg-warm-surface border border-warm hover:bg-warm-subtle text-warm-main shadow-xs transition-colors cursor-pointer flex items-center justify-center" title="Turn camera on / off">
+            <svg id="icon-camera-on" class="w-5 h-5 text-warm-main" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+            <svg id="icon-camera-off" class="hidden w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M3 3l18 18M9.75 9.75h3.75a2.25 2.25 0 012.25 2.25v3.75m-9 0h9a2.25 2.25 0 002.25-2.25v-2.25M4.5 7.5a2.25 2.25 0 012.25-2.25h3.75"/></svg>
+          </button>
+
+          <!-- Flip Camera (Front / Back on mobile devices) -->
+          <button id="call-btn-flip-camera" class="p-3 rounded-2xl bg-warm-surface border border-warm hover:bg-warm-subtle text-warm-muted hover:text-warm-main shadow-xs transition-colors cursor-pointer flex items-center justify-center" title="Flip front / rear camera">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+          </button>
+
+          <!-- Leave Call Button -->
+          <button id="call-btn-leave" class="px-4 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-medium text-xs shadow-sm transition-all cursor-pointer flex items-center justify-center gap-1.5" title="Leave this call">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+            <span>Leave</span>
+          </button>
+
+          <!-- End Call for All (Owner/Initiator Only) -->
+          <button id="call-btn-end-all" class="hidden px-3.5 py-3 rounded-2xl bg-red-100 hover:bg-red-200 text-red-800 font-medium text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5" title="End call for all participants">
+            <svg class="w-4 h-4 text-red-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9"/></svg>
+            <span class="hidden sm:inline">End for all</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Toast Notification Container -->
+      <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    </div>
+
+    <!-- Socket.IO client library (served by the Express/Socket.IO backend) -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- Vanilla JavaScript application logic -->
+    <script type="module" src="/src/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "EPHEMERAL",
+  "description": "Conversations that leave no trace. Minimal, private, real-time group messaging with in-memory ephemeral rooms and auto-destruction.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
