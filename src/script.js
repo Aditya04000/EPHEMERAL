@@ -404,6 +404,7 @@ function setupEventListeners() {
   el.callBtnToggleCamera?.addEventListener('click', toggleCallCamera);
   el.callBtnFlipCamera?.addEventListener('click', flipCallCamera);
   el.callBtnToggleSize?.addEventListener('click', toggleCallMinimized);
+  setupFloatingCallDrag();
   el.callBtnLeave?.addEventListener('click', () => leaveCall(true));
   el.callBtnEndAll?.addEventListener('click', endCallForAll);
 
@@ -2227,6 +2228,79 @@ function toggleCallMinimized() {
   el.activeCallOverlay?.classList.toggle('call-minimized', callState.isMinimized);
   el.iconMinimize?.classList.toggle('hidden', callState.isMinimized);
   el.iconExpand?.classList.toggle('hidden', !callState.isMinimized);
+
+  if (callState.isMinimized) {
+    requestAnimationFrame(() => {
+      if (!el.activeCallOverlay) return;
+      const rect = el.activeCallOverlay.getBoundingClientRect();
+      el.activeCallOverlay.style.left = `${rect.left}px`;
+      el.activeCallOverlay.style.top = `${rect.top}px`;
+      el.activeCallOverlay.style.right = 'auto';
+      el.activeCallOverlay.style.bottom = 'auto';
+    });
+  } else if (el.activeCallOverlay) {
+    el.activeCallOverlay.style.left = '';
+    el.activeCallOverlay.style.top = '';
+    el.activeCallOverlay.style.right = '';
+    el.activeCallOverlay.style.bottom = '';
+  }
+}
+
+function setupFloatingCallDrag() {
+  const panel = el.activeCallOverlay;
+  const dragHandle = panel?.querySelector('.call-overlay-header');
+  if (!panel || !dragHandle) return;
+
+  let pointerId = null;
+  let startX = 0;
+  let startY = 0;
+  let startLeft = 0;
+  let startTop = 0;
+
+  dragHandle.style.cursor = 'grab';
+  dragHandle.style.touchAction = 'none';
+
+  dragHandle.addEventListener('pointerdown', (event) => {
+    if (!callState.isMinimized || event.target.closest('button')) return;
+    const rect = panel.getBoundingClientRect();
+    pointerId = event.pointerId;
+    startX = event.clientX;
+    startY = event.clientY;
+    startLeft = rect.left;
+    startTop = rect.top;
+    dragHandle.style.cursor = 'grabbing';
+    dragHandle.setPointerCapture?.(pointerId);
+    event.preventDefault();
+  });
+
+  dragHandle.addEventListener('pointermove', (event) => {
+    if (pointerId !== event.pointerId || !callState.isMinimized) return;
+    const maxLeft = Math.max(0, window.innerWidth - panel.offsetWidth);
+    const maxTop = Math.max(0, window.innerHeight - panel.offsetHeight);
+    const nextLeft = Math.min(maxLeft, Math.max(0, startLeft + event.clientX - startX));
+    const nextTop = Math.min(maxTop, Math.max(0, startTop + event.clientY - startY));
+    panel.style.left = `${nextLeft}px`;
+    panel.style.top = `${nextTop}px`;
+    panel.style.right = 'auto';
+    panel.style.bottom = 'auto';
+  });
+
+  const stopDragging = (event) => {
+    if (pointerId !== event.pointerId) return;
+    pointerId = null;
+    dragHandle.style.cursor = 'grab';
+  };
+  dragHandle.addEventListener('pointerup', stopDragging);
+  dragHandle.addEventListener('pointercancel', stopDragging);
+
+  window.addEventListener('resize', () => {
+    if (!callState.isMinimized) return;
+    const rect = panel.getBoundingClientRect();
+    const left = Math.min(Math.max(0, rect.left), Math.max(0, window.innerWidth - panel.offsetWidth));
+    const top = Math.min(Math.max(0, rect.top), Math.max(0, window.innerHeight - panel.offsetHeight));
+    panel.style.left = `${left}px`;
+    panel.style.top = `${top}px`;
+  });
 }
 
 function openCallOverlay() {
@@ -2234,6 +2308,12 @@ function openCallOverlay() {
   el.activeCallOverlay?.classList.add('flex');
   callState.isMinimized = false;
   el.activeCallOverlay?.classList.remove('call-minimized');
+  if (el.activeCallOverlay) {
+    el.activeCallOverlay.style.left = '';
+    el.activeCallOverlay.style.top = '';
+    el.activeCallOverlay.style.right = '';
+    el.activeCallOverlay.style.bottom = '';
+  }
   el.iconMinimize?.classList.remove('hidden');
   el.iconExpand?.classList.add('hidden');
 }

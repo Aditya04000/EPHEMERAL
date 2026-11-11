@@ -708,3 +708,55 @@ body {
     margin-left: auto;
   }
 }
+
+/* ==========================================================
+   FLOATING + DRAGGABLE MINIMIZED CALL (MOBILE AND DESKTOP)
+   ========================================================== */
+#active-call-overlay.call-minimized {
+  position: fixed !important;
+  inset: auto 12px calc(96px + env(safe-area-inset-bottom, 0px)) auto !important;
+  width: min(22rem, calc(100vw - 24px)) !important;
+  max-width: calc(100vw - 24px) !important;
+  max-height: min(52dvh, 430px);
+  height: auto !important;
+  overflow: hidden !important;
+  z-index: 9999 !important;
+  padding: 0.75rem !important;
+  margin: 0 !important;
+  transform: none !important;
+  background: var(--bg-surface, #faf9f6) !important;
+  box-sizing: border-box !important;
+  touch-action: pan-y;
+}
+
+#active-call-overlay.call-minimized .call-overlay-header {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#active-call-overlay.call-minimized .call-overlay-header:active {
+  cursor: grabbing;
+}
+
+#active-call-overlay.call-minimized #call-video-grid {
+  min-height: 0 !important;
+  max-height: 110px !important;
+  overflow: hidden !important;
+}
+
+#active-call-overlay.call-minimized .video-tile {
+  min-height: 50px !important;
+  max-height: 100px !important;
+}
+
+@media (max-width: 640px) {
+  #active-call-overlay.call-minimized {
+    inset: auto 10px calc(100px + env(safe-area-inset-bottom, 0px)) auto !important;
+    width: min(22rem, calc(100vw - 20px)) !important;
+    max-width: calc(100vw - 20px) !important;
+    max-height: 48dvh;
+    padding: 0.65rem !important;
+  }
+}
