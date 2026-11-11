@@ -1,4 +1,3 @@
-
 @import "tailwindcss";
 
 :root {
@@ -247,7 +246,6 @@ body {
    ========================================== */
 
 @media screen and (max-width: 640px) {
-
   /* Header becomes three organized rows */
   #chat-view > header {
     display: grid !important;
@@ -399,7 +397,6 @@ body {
    ========================================== */
 
 @media screen and (max-width: 360px) {
-
   #chat-view > header {
     padding: 9px 10px;
     gap: 8px;
@@ -431,16 +428,13 @@ body {
   max-height: min(420px, 55dvh);
   overflow-y: auto;
   overflow-x: hidden;
-
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
-
   scrollbar-width: thin;
   scrollbar-color: rgba(69, 97, 73, 0.35) transparent;
 }
 
-/* Keep emoji grid properly arranged */
 #emoji-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -448,7 +442,6 @@ body {
   gap: 4px;
 }
 
-/* Make individual emojis easy to tap */
 #emoji-grid button {
   min-width: 0;
   min-height: 36px;
@@ -456,7 +449,6 @@ body {
   touch-action: manipulation;
 }
 
-/* Mobile emoji picker */
 @media screen and (max-width: 640px) {
   #emoji-picker-popover {
     width: min(18rem, calc(100vw - 24px));
