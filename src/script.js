@@ -1886,6 +1886,12 @@ async function handleIncomingIceCandidate(senderSessionId, candidate) {
 }
 
 function renderLocalVideoTile() {
+  if (!el.callVideoGrid) {
+    console.error('[EPHEMERAL] Call video grid element is missing.');
+    showToast('Video area could not be opened. Please refresh and try again.', 'error');
+    return;
+  }
+
   let tile = document.getElementById('local-video-tile');
   if (!tile) {
     tile = document.createElement('div');
@@ -1894,31 +1900,153 @@ function renderLocalVideoTile() {
     el.callVideoGrid.prepend(tile);
   }
 
+  // Apply essential layout styles here as well as in CSS so the preview
+  // remains visible even if a stylesheet rule is missing or overridden.
+  Object.assign(tile.style, {
+    position: 'relative',
+    width: '100%',
+    minHeight: '220px',
+    aspectRatio: '16 / 9',
+    overflow: 'hidden',
+    borderRadius: '16px',
+    background: '#292524',
+  });
+
   const nameInitial = (state.userName || 'Y')[0].toUpperCase();
+  const videoTrack = callState.localStream?.getVideoTracks()[0] || null;
+  const hasLiveVideo = Boolean(
+    videoTrack && videoTrack.readyState === 'live' && videoTrack.enabled
+  );
 
   tile.innerHTML = `
     <video autoplay playsinline muted></video>
-    <div class="video-avatar-fallback ${callState.isVideoOff ? 'flex' : 'hidden'} absolute inset-0 flex flex-col items-center justify-center bg-[#292524] text-white">
+    <div class="video-avatar-fallback ${hasLiveVideo && !callState.isVideoOff ? 'hidden' : 'flex'} absolute inset-0 flex flex-col items-center justify-center bg-[#292524] text-white">
       <div class="w-14 h-14 rounded-full bg-sage flex items-center justify-center text-lg font-bold mb-1 shadow-md">
         ${escapeHtml(nameInitial)}
       </div>
-      <span class="text-[10px] text-warm-dim">Camera is off</span>
+      <span class="camera-fallback-label text-[10px] text-warm-dim">
+        ${hasLiveVideo ? 'Camera is off' : 'Waiting for camera…'}
+      </span>
     </div>
     <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[11px] pointer-events-none">
       <span class="px-2 py-0.5 rounded-md bg-black/60 text-white font-medium truncate max-w-[75%] backdrop-blur-xs">
         ${escapeHtml(state.userName)} (you)
       </span>
       <span class="mic-muted-badge ${callState.isMuted ? 'flex' : 'hidden'} px-1.5 py-0.5 rounded-md bg-red-600/80 text-white items-center justify-center backdrop-blur-xs">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M3 3l18 18M9 9v3a3 3 0 005.12 2.12M15 9.34V6a3 3 0 00-5.94-.6"/></svg>
+        Microphone muted
       </span>
     </div>
   `;
 
   const videoEl = tile.querySelector('video');
-  if (videoEl && callState.localStream) {
-    videoEl.srcObject = callState.localStream;
-    videoEl.play().catch(() => {});
+  const fallback = tile.querySelector('.video-avatar-fallback');
+  const fallbackLabel = tile.querySelector('.camera-fallback-label');
+
+  if (!callState.localStream || !videoTrack) {
+    console.error('[EPHEMERAL] Local stream has no video track.', {
+      streamActive: callState.localStream?.active,
+      tracks: callState.localStream?.getTracks().map(track => ({
+        kind: track.kind,
+        readyState: track.readyState,
+        enabled: track.enabled,
+      })),
+    });
+    if (fallbackLabel) fallbackLabel.textContent = 'Camera unavailable';
+    fallback?.classList.remove('hidden');
+    fallback?.classList.add('flex');
+    updateCallGridColumns();
+    return;
   }
+
+  // Explicit sizing and layering prevent the video from being hidden behind
+  // the avatar fallback or collapsing to zero height.
+  Object.assign(videoEl.style, {
+    position: 'absolute',
+    inset: '0',
+    display: 'block',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    zIndex: '1',
+    background: '#292524',
+    transform: 'scaleX(-1)',
+  });
+  videoEl.autoplay = true;
+  videoEl.muted = true;
+  videoEl.playsInline = true;
+  videoEl.setAttribute('autoplay', '');
+  videoEl.setAttribute('muted', '');
+  videoEl.setAttribute('playsinline', '');
+  videoEl.srcObject = callState.localStream;
+
+  if (fallback) fallback.style.zIndex = '2';
+  const labels = tile.querySelectorAll('.absolute.bottom-2');
+  labels.forEach(label => { label.style.zIndex = '3'; });
+
+  const showVideo = () => {
+    if (callState.isVideoOff) return;
+    fallback?.classList.add('hidden');
+    fallback?.classList.remove('flex');
+  };
+
+  const showPlaybackError = (error) => {
+    console.error('[EPHEMERAL] Local camera preview playback failed:', error);
+    if (fallbackLabel) fallbackLabel.textContent = 'Camera preview unavailable';
+    fallback?.classList.remove('hidden');
+    fallback?.classList.add('flex');
+  };
+
+  videoEl.onloadedmetadata = async () => {
+    console.log('[EPHEMERAL] Local video metadata loaded:', {
+      videoWidth: videoEl.videoWidth,
+      videoHeight: videoEl.videoHeight,
+      trackState: videoTrack.readyState,
+    });
+    try {
+      await videoEl.play();
+      if (videoEl.videoWidth > 0 && videoEl.videoHeight > 0) showVideo();
+    } catch (error) {
+      showPlaybackError(error);
+    }
+  };
+
+  videoEl.onplaying = showVideo;
+  videoEl.onerror = () => showPlaybackError(videoEl.error || 'Unknown video element error');
+
+  // Handle streams whose metadata was already available before listeners were set.
+  if (videoEl.readyState >= HTMLMediaElement.HAVE_METADATA) {
+    videoEl.play()
+      .then(() => {
+        if (videoEl.videoWidth > 0 && videoEl.videoHeight > 0) showVideo();
+      })
+      .catch(showPlaybackError);
+  }
+
+  videoTrack.onended = () => {
+    if (fallbackLabel) fallbackLabel.textContent = 'Camera stopped';
+    fallback?.classList.remove('hidden');
+    fallback?.classList.add('flex');
+    showToast('Your camera has stopped.', 'error');
+  };
+
+  videoTrack.onmute = () => {
+    if (fallbackLabel) fallbackLabel.textContent = 'Camera temporarily unavailable';
+  };
+
+  videoTrack.onunmute = () => {
+    if (fallbackLabel) fallbackLabel.textContent = 'Camera is off';
+    if (!callState.isVideoOff) {
+      videoEl.play().then(showVideo).catch(showPlaybackError);
+    }
+  };
+
+  console.log('[EPHEMERAL] Local camera track attached:', {
+    label: videoTrack.label,
+    readyState: videoTrack.readyState,
+    enabled: videoTrack.enabled,
+    muted: videoTrack.muted,
+    streamActive: callState.localStream.active,
+  });
 
   updateCallGridColumns();
 }
