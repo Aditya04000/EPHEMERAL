@@ -1,3 +1,4 @@
+
 @import "tailwindcss";
 
 :root {
@@ -16,11 +17,17 @@
   --accent-clay: #995240;
   --bubble-received: #ffffff;
   --bubble-sent: #eaf1ea;
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  min-height: 100%;
 }
 
 body {
@@ -41,13 +48,16 @@ body {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.12);
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.2);
 }
@@ -56,33 +66,43 @@ body {
 .bg-warm-canvas {
   background-color: var(--bg-primary);
 }
+
 .bg-warm-surface {
   background-color: var(--bg-surface);
 }
+
 .bg-warm-subtle {
   background-color: var(--bg-surface-subtle);
 }
+
 .border-warm {
   border-color: var(--border-subtle);
 }
+
 .border-warm-medium {
   border-color: var(--border-medium);
 }
+
 .text-warm-main {
   color: var(--text-main);
 }
+
 .text-warm-muted {
   color: var(--text-muted);
 }
+
 .text-warm-dim {
   color: var(--text-dim);
 }
+
 .text-sage {
   color: var(--accent-sage);
 }
+
 .bg-sage {
   background-color: var(--accent-sage);
 }
+
 .bg-sage-light {
   background-color: var(--accent-sage-light);
 }
@@ -94,6 +114,7 @@ body {
   border-radius: 16px;
   border-bottom-left-radius: 4px;
 }
+
 .msg-bubble-sent {
   background-color: var(--bubble-sent);
   border: 1px solid rgba(69, 97, 73, 0.15);
@@ -109,13 +130,25 @@ body {
 
 /* Animation utilities */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes popIn {
-  0% { opacity: 0; transform: scale(0.96); }
-  100% { opacity: 1; transform: scale(1); }
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .animate-fade-in {
@@ -130,12 +163,16 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-/* WebRTC Video Call Styles */
+/* ==========================================
+   WebRTC Video Call Styles
+   ========================================== */
+
 .video-tile {
   background: #1e1b18;
   position: relative;
@@ -172,7 +209,9 @@ body {
   height: auto;
   border-radius: 1.25rem;
   border: 1px solid var(--border-medium);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.2),
+    0 8px 10px -6px rgba(0, 0, 0, 0.2);
   z-index: 45;
   padding: 0.75rem;
 }
@@ -202,3 +241,184 @@ body {
   border-radius: 0.75rem;
 }
 
+/* ==========================================
+   MOBILE RESPONSIVE ROOM HEADER
+   Desktop layout remains unchanged.
+   ========================================== */
+
+@media screen and (max-width: 640px) {
+
+  /* Header becomes three organized rows */
+  #chat-view > header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    align-items: stretch;
+    padding: 10px 12px;
+    width: 100%;
+  }
+
+  /* Room information row */
+  #chat-view > header > div:first-child {
+    width: 100%;
+    min-width: 0;
+    gap: 10px;
+    align-items: center;
+  }
+
+  #chat-view > header > div:first-child > div {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  /* Room name */
+  #top-room-name {
+    max-width: 190px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #owner-badge {
+    flex-shrink: 0;
+  }
+
+  /* Room code and copy actions */
+  #chat-view > header > div:first-child > div > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 7px;
+    row-gap: 5px;
+    min-width: 0;
+  }
+
+  #top-room-id {
+    overflow-wrap: anywhere;
+    letter-spacing: 0.02em;
+  }
+
+  #quick-copy-link-btn,
+  #quick-copy-code-btn {
+    white-space: nowrap;
+    font-size: 10px;
+  }
+
+  /* Expiration timer and active call banner */
+  #chat-view > header > div:nth-child(2) {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 7px;
+  }
+
+  /* Only show timer when JavaScript makes it visible */
+  #room-countdown-pill:not(.hidden) {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    font-size: 10px;
+    padding: 5px 9px;
+    white-space: nowrap;
+  }
+
+  #header-active-call-pill:not(.hidden) {
+    display: flex;
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  /* Call, participant and menu controls */
+  #chat-view > header > div:last-child {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+  }
+
+  #header-video-call-btn,
+  #header-audio-call-btn,
+  #header-disappear-btn,
+  #open-participants-btn,
+  #room-options-menu-btn {
+    flex-shrink: 0;
+  }
+
+  #header-video-call-btn,
+  #header-audio-call-btn,
+  #room-options-menu-btn {
+    min-width: 36px;
+    min-height: 36px;
+    justify-content: center;
+  }
+
+  #open-participants-btn {
+    padding: 7px 10px;
+  }
+
+  /* Dropdown menu */
+  #room-dropdown-menu {
+    right: 0;
+    max-width: calc(100vw - 24px);
+  }
+
+  /* Prevent horizontal overflow */
+  #chat-view,
+  #chat-view > header,
+  #chat-view > div {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* Mobile minimized video call */
+  #active-call-overlay.call-minimized {
+    right: 10px;
+    bottom: 12px;
+    width: min(22rem, calc(100vw - 20px));
+    max-width: calc(100vw - 20px);
+  }
+
+  .video-tile {
+    min-height: 110px;
+  }
+
+  #active-call-overlay:not(.call-minimized) {
+    overflow-y: auto;
+    max-height: 100dvh;
+  }
+}
+
+/* ==========================================
+   EXTRA SMALL PHONES
+   ========================================== */
+
+@media screen and (max-width: 360px) {
+
+  #chat-view > header {
+    padding: 9px 10px;
+    gap: 8px;
+  }
+
+  #top-room-name {
+    max-width: 145px;
+  }
+
+  #quick-copy-link-btn,
+  #quick-copy-code-btn {
+    font-size: 9px;
+  }
+
+  #chat-view > header > div:last-child {
+    gap: 5px;
+  }
+
+  #open-participants-btn {
+    padding: 6px 8px;
+  }
+}
